@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Keynest - Secure Your Logins</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Firebase App (core) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+
+<!-- Firebase Auth -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
+
+</head>
+<body>
+  <div class="container">
+    <h1 class="logo">Vaulture</h1>
+    <p class="tagline">Your digital keychain. Secure. Anywhere.</p>
+    <button id="google-signin">Sign in with Google</button>
+  </div>
+
+  <script>
+    // Paste your Firebase config here
+    const firebaseConfig = {
+      apiKey: "YOUR-API-KEY",
+      authDomain: "YOUR-PROJECT-ID.firebaseapp.com",
+      projectId: "YOUR-PROJECT-ID",
+      storageBucket: "YOUR-PROJECT-ID.appspot.com",
+      messagingSenderId: "YOUR-SENDER-ID",
+      appId: "YOUR-APP-ID"
+    };
+  
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+  
+    // Google Sign-in Logic
+    document.getElementById('google-signin').addEventListener('click', () => {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider)
+        .then((result) => {
+          const user = result.user;
+          alert("Welcome, " + user.displayName);
+          location.href=`keynest.html`;
+          // TODO: Redirect to dashboard or save data
+        })
+        .catch((error) => {
+          console.error(error);
+          alert("Error signing in");
+        });
+    });
+  </script>
+  
+</body>
+</html>
