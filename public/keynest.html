@@ -4,46 +4,884 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Keynest Dashboard</title>
-    <link rel="stylesheet" href="keynest.css">
-    <script type="module" src="script.js" defer></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #4f46e5;
+        --primary-light: #6366f1;
+        --primary-dark: #3730a3;
+        --danger: #ef4444;
+        --danger-dark: #dc2626;
+        --success: #22c55e;
+        --neutral-bg: #f9fafb;
+        --card-bg: #ffffff;
+        --input-bg: #f9fafb;
+        --text-main: #1f2937;
+        --text-muted: #6b7280;
+        --border-light: #e5e7eb;
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+        --radius-sm: 8px;
+        --radius-md: 12px;
+        --radius-lg: 16px;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        min-height: 100vh;
+        font-family: "Inter", sans-serif;
+        background: var(--neutral-bg);
+        color: var(--text-main);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 2rem 1rem;
+        position: relative;
+      }
+
+      .dashboard-header {
+        width: 100%;
+        max-width: 600px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2.5rem;
+        padding: 0 1rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      .welcome-group {
+        display: block;
+      }
+
+      .welcome-text {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--text-main);
+      }
+
+      #user-email {
+        color: var(--primary);
+        font-weight: 600;
+      }
+
+      .signout-button-container {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        display: flex;
+        justify-content: flex-end;
+        width: 100%;
+        max-width: 600px;
+        margin-bottom: 1rem;
+      }
+
+      .btn-signout {
+        background: var(--danger);
+        border: none;
+        color: white;
+        padding: 0.7rem 1.2rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.95rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
+      }
+
+      .btn-signout:hover {
+        background: var(--danger-dark);
+        box-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);
+      }
+
+      .btn-signout svg {
+        width: 1.1em;
+        height: 1.1em;
+        fill: currentColor;
+      }
+
+      .main-content {
+        width: 100%;
+        max-width: 600px;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .card {
+        background: var(--card-bg);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+        padding: 2rem;
+        border: 1px solid var(--border-light);
+      }
+
+      .card-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-dark);
+        margin-bottom: 1.5rem;
+        text-align: center;
+      }
+
+      .form-group {
+        margin-bottom: 1.2rem;
+      }
+
+      label {
+        display: block;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        font-weight: 500;
+        margin-bottom: 0.4rem;
+      }
+
+      .input-wrapper {
+        position: relative;
+      }
+
+      input {
+        width: 100%;
+        padding: 0.9rem 1rem;
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-sm);
+        background: var(--input-bg);
+        color: var(--text-main);
+        font-size: 1rem;
+        outline: none;
+        transition: border 0.2s, box-shadow 0.2s, background 0.2s;
+      }
+
+      input:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        background: white;
+      }
+
+      .password-toggle-btn {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--text-muted);
+        font-size: 1rem;
+        padding: 0.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .password-toggle-btn:hover {
+        color: var(--primary);
+      }
+
+      .form-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 0.5rem;
+      }
+
+      .btn-submit {
+        flex-grow: 1;
+        padding: 1rem;
+        border: none;
+        border-radius: var(--radius-sm);
+        background: var(--primary);
+        color: #fff;
+        font-weight: 600;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: background 0.2s, box-shadow 0.2s;
+        box-shadow: var(--shadow-sm);
+      }
+
+      .btn-submit:hover {
+        background: var(--primary-dark);
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+      }
+
+      .btn-cancel {
+        flex-grow: 1;
+        padding: 1rem;
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-sm);
+        background: none;
+        color: var(--text-muted);
+        font-weight: 600;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: background 0.2s, color 0.2s, border-color 0.2s;
+      }
+
+      .btn-cancel:hover {
+        background: var(--input-bg);
+        color: var(--text-main);
+        border-color: var(--text-muted);
+      }
+
+      .credentials-list {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .credential-item {
+        background: var(--card-bg);
+        padding: 1.2rem 1.5rem;
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border-light);
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+        transition: box-shadow 0.15s, border-color 0.15s;
+        position: relative;
+      }
+
+      .credential-item:hover {
+        box-shadow: var(--shadow-md);
+        border-color: var(--primary-light);
+      }
+
+      .item-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.4rem;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+
+      .item-platform {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--primary-dark);
+      }
+
+      .item-actions {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+
+      .btn-action {
+        background: none;
+        border: none;
+        font-size: 0.9rem;
+        cursor: pointer;
+        padding: 0.3rem 0.6rem;
+        border-radius: var(--radius-sm);
+        transition: background 0.2s, color 0.2s;
+        font-weight: 500;
+      }
+
+      .btn-delete {
+        color: var(--danger);
+      }
+      .btn-delete:hover {
+        background: var(--danger-dark);
+        color: white;
+      }
+
+      .btn-hide-show-item {
+        color: var(--text-muted);
+      }
+      .btn-hide-show-item:hover {
+        background: var(--primary-light);
+        color: white;
+      }
+
+      .btn-edit-item {
+        color: var(--primary);
+      }
+      .btn-edit-item:hover {
+        background: var(--primary);
+        color: white;
+      }
+
+      .item-detail {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.95rem;
+        color: var(--text-main);
+      }
+
+      .item-detail strong {
+        font-weight: 600;
+        color: var(--text-muted);
+        min-width: 70px;
+      }
+
+      .item-username-value,
+      .item-password-value {
+        font-family: "Fira Code", "Consolas", monospace;
+        background: var(--input-bg);
+        padding: 0.3rem 0.6rem;
+        border-radius: 5px;
+        word-break: break-all;
+        flex-grow: 1;
+        transition: filter 0.3s ease;
+      }
+
+      .item-username-value.hidden,
+      .item-password-value.hidden {
+        filter: blur(4px);
+      }
+
+      @media (max-width: 768px) {
+        .dashboard-header {
+          flex-direction: column;
+          gap: 1.5rem;
+          margin-bottom: 2rem;
+          text-align: center;
+          padding: 0;
+        }
+
+        .welcome-group {
+          justify-content: center;
+        }
+
+        .signout-button-container {
+          position: static;
+          width: 100%;
+          display: flex;
+          justify-content: center;
+          margin-bottom: 1rem;
+          order: -1;
+        }
+
+        .btn-signout {
+          width: fit-content;
+          align-self: center;
+        }
+
+        .welcome-text {
+          font-size: 1.6rem;
+        }
+
+        .main-content {
+          padding: 0 1rem;
+        }
+
+        .card {
+          padding: 1.5rem;
+        }
+
+        .card-title {
+          font-size: 1.3rem;
+          margin-bottom: 1rem;
+        }
+
+        .credential-item {
+          padding: 1rem;
+          gap: 0.4rem;
+        }
+
+        .item-platform {
+          font-size: 1rem;
+        }
+
+        .btn-action {
+          font-size: 0.85rem;
+          padding: 0.2rem 0.5rem;
+        }
+
+        .item-detail {
+          font-size: 0.9rem;
+        }
+      }
+      @media (max-width: 768px) {
+        .dashboard-header {
+          flex-direction: column;
+          gap: 1.5rem;
+          margin-bottom: 2rem;
+          text-align: center;
+          padding: 0;
+        }
+
+        .welcome-group {
+          justify-content: center;
+        }
+
+        .signout-button-container {
+          position: static;
+          width: 100%;
+          display: flex;
+          justify-content: flex-start; /* <-- Change this line */
+          margin-bottom: 1rem;
+          order: -1;
+        }
+
+        .btn-signout {
+          width: fit-content;
+          align-self: center;
+        }
+
+        .welcome-text {
+          font-size: 1.6rem;
+        }
+
+        .main-content {
+          padding: 0 1rem;
+        }
+
+        .card {
+          padding: 1.5rem;
+        }
+
+        .card-title {
+          font-size: 1.3rem;
+          margin-bottom: 1rem;
+        }
+
+        .credential-item {
+          padding: 1rem;
+          gap: 0.4rem;
+        }
+
+        .item-platform {
+          font-size: 1rem;
+        }
+
+        .btn-action {
+          font-size: 0.85rem;
+          padding: 0.2rem 0.5rem;
+        }
+
+        .item-detail {
+          font-size: 0.9rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        body {
+          padding: 1rem 0.5rem;
+        }
+
+        .dashboard-header {
+          margin-bottom: 1.5rem;
+        }
+
+        .welcome-text {
+          font-size: 1.4rem;
+        }
+
+        .main-content {
+          gap: 1.5rem;
+        }
+
+        .card {
+          padding: 1.2rem;
+          border-radius: var(--radius-md);
+        }
+
+        .card-title {
+          font-size: 1.2rem;
+          margin-bottom: 1rem;
+        }
+
+        .form-group {
+          margin-bottom: 1rem;
+        }
+
+        label {
+          font-size: 0.85rem;
+          margin-bottom: 0.3rem;
+        }
+
+        input {
+          padding: 0.7rem 0.8rem;
+          font-size: 0.9rem;
+        }
+
+        .form-actions {
+          flex-direction: column;
+          gap: 0.8rem;
+        }
+
+        .btn-submit,
+        .btn-cancel {
+          font-size: 1rem;
+          padding: 0.8rem;
+        }
+
+        .credential-item {
+          padding: 0.8rem;
+          border-radius: var(--radius-sm);
+        }
+
+        .item-platform {
+          font-size: 0.95rem;
+        }
+
+        .item-detail {
+          font-size: 0.85rem;
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .item-detail strong {
+          min-width: unset;
+        }
+      }
+    </style>
   </head>
 
   <body>
-    <div class="signout-container">
-      <button id="signout-btn">
-        <svg viewBox="0 0 20 20" focusable="false" aria-hidden="true">
-          <path d="M9 3a1 1 0 0 1 1 1v4h-2V5.41L4.41 9 8 12.59V11h2v4a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5zm7.71 6.29a1 1 0 0 0-1.42 0l-3 3a1 1 0 0 0 0 1.42l3 3a1 1 0 0 0 1.42-1.42L15.41 13H17a1 1 0 1 0 0-2h-1.59l1.3-1.29a1 1 0 0 0 0-1.42z"/>
+    <div class="signout-button-container">
+      <button id="signout-btn" class="btn-signout">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="2"
+          stroke="currentColor"
+          aria-hidden="true"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"
+          />
         </svg>
         Sign Out
       </button>
     </div>
 
-    <h2>Welcome, <span id="user-email">loading...</span></h2>
+    <header class="dashboard-header">
+      <h2 class="welcome-text">
+        Welcome,
+        <span id="user-email">loading...</span>
+      </h2>
+    </header>
 
-    <form id="login-form" autocomplete="off">
-      <div class="form-group">
-        <label for="platform">Platform</label>
-        <input
-          type="text"
-          id="platform"
-          name="platform"
-          placeholder="e.g. Instagram"
-          required
-        />
+    <div class="main-content">
+      <div class="card">
+        <h3 class="card-title" id="form-title">Save New Credential</h3>
+        <form id="login-form" autocomplete="off">
+          <div class="form-group">
+            <label for="platform">Platform</label>
+            <input
+              type="text"
+              id="platform"
+              name="platform"
+              placeholder="e.g. Instagram"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="username">Username</label>
+            <div class="input-wrapper">
+              <input
+                type="text"
+                id="username"
+                name="username"
+                placeholder="Your username"
+                required
+              />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <div class="input-wrapper">
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Your password"
+                required
+              />
+              <button
+                type="button"
+                class="password-toggle-btn"
+                data-target="password"
+              >
+                👁️
+              </button>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn-submit" id="submit-btn">
+              Save Credential
+            </button>
+            <button
+              type="button"
+              class="btn-cancel hidden"
+              id="cancel-edit-btn"
+            >
+              Cancel Edit
+            </button>
+          </div>
+        </form>
       </div>
-      <div class="form-group">
-        <label for="username">Username</label>
-        <input type="text" id="username" name="username" placeholder="Username" required />
-      </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" placeholder="Password" required />
-      </div>
-      <button type="submit">Save Login</button>
-    </form>
 
-    <ul id="logins-list"></ul>
+      <div class="card">
+        <h3 class="card-title">Saved Credentials</h3>
+        <ul id="logins-list" class="credentials-list"></ul>
+      </div>
+    </div>
 
-    
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
+      import {
+        getAuth,
+        onAuthStateChanged,
+        signOut,
+      } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+      import {
+        getFirestore,
+        collection,
+        addDoc,
+        getDocs,
+        deleteDoc,
+        doc,
+        updateDoc,
+      } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyDQ2IyIArTli1JnjBy6DZAUPUp9mK3JTEM",
+        authDomain: "keynest-70052.firebaseapp.com",
+        projectId: "keynest-70052",
+        storageBucket: "keynest-70052.firebasestorage.app",
+        messagingSenderId: "506594151806",
+        appId: "1:506594151806:web:6582f0b9d584ce614fb72f",
+        measurementId: "G-X0G324PVHR",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+
+      const form = document.getElementById("login-form");
+      const list = document.getElementById("logins-list");
+      const userEmailSpan = document.getElementById("user-email");
+
+      const signoutBtn = document.getElementById("signout-btn");
+      const submitBtn = document.getElementById("submit-btn");
+      const cancelEditBtn = document.getElementById("cancel-edit-btn");
+      const formTitle = document.getElementById("form-title");
+
+      let editingDocId = null;
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          userEmailSpan.textContent = user.email;
+          loadLogins(user.uid);
+        } else {
+          window.location.href = "../index.html";
+        }
+      });
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const platform = form.platform.value;
+        const username = form.username.value;
+        const password = form.password.value;
+        const user = auth.currentUser;
+
+        if (!user) {
+          alert("You must be logged in to save credentials.");
+          return;
+        }
+
+        try {
+          if (editingDocId) {
+            const docRef = doc(db, "logins", editingDocId);
+            await updateDoc(docRef, {
+              platform,
+              username,
+              password,
+            });
+            alert("Credential updated successfully!");
+          } else {
+            await addDoc(collection(db, "logins"), {
+              uid: user.uid,
+              platform,
+              username,
+              password,
+              createdAt: new Date(),
+            });
+            alert("Credential saved successfully!");
+          }
+          form.reset();
+          resetFormToSaveMode();
+          loadLogins(user.uid);
+        } catch (error) {
+          console.error("Error saving/updating document: ", error);
+          alert("Failed to save/update credential. Please try again.");
+        }
+      });
+
+      async function loadLogins(uid) {
+        list.innerHTML = "";
+        try {
+          const snapshot = await getDocs(collection(db, "logins"));
+          const userLogins = [];
+          snapshot.forEach((docSnap) => {
+            const data = docSnap.data();
+            if (data.uid === uid) {
+              userLogins.push({ id: docSnap.id, ...data });
+            }
+          });
+
+          userLogins.sort(
+            (a, b) =>
+              (b.createdAt?.toDate() || 0) - (a.createdAt?.toDate() || 0)
+          );
+
+          userLogins.forEach((item) => {
+            const li = document.createElement("li");
+            li.className = "credential-item";
+            li.setAttribute("data-id", item.id);
+
+            li.innerHTML = `
+              <div class="item-header">
+                <span class="item-platform">${item.platform}</span>
+                <div class="item-actions">
+                  <button type="button" class="btn-action btn-edit-item" data-action="edit">
+                    Edit
+                  </button>
+                  <button type="button" class="btn-action btn-hide-show-item" data-action="toggle-username-item">
+                    Hide User
+                  </button>
+                  <button type="button" class="btn-action btn-hide-show-item" data-action="toggle-password-item">
+                    Hide Pass
+                  </button>
+                  <button type="button" class="btn-action btn-delete" data-action="delete">
+                    Delete
+                  </button>
+                </div>
+              </div>
+              <div class="item-detail">
+                <strong>Username:</strong>
+                <span class="item-username-value hidden">${item.username}</span>
+              </div>
+              <div class="item-detail">
+                <strong>Password:</strong>
+                <span class="item-password-value hidden">${item.password}</span>
+              </div>
+            `;
+            list.appendChild(li);
+          });
+        } catch (error) {
+          console.error("Error loading documents: ", error);
+          alert("Failed to load credentials. Please try again.");
+        }
+      }
+
+      function resetFormToSaveMode() {
+        editingDocId = null;
+        form.reset();
+        formTitle.textContent = "Save New Credential";
+        submitBtn.textContent = "Save Credential";
+        cancelEditBtn.classList.add("hidden");
+
+        const passwordInput = document.getElementById("password");
+        passwordInput.type = "password";
+        document.querySelector(
+          '.password-toggle-btn[data-target="password"]'
+        ).textContent = "👁️";
+      }
+
+      cancelEditBtn.addEventListener("click", resetFormToSaveMode);
+
+      list.addEventListener("click", async (e) => {
+        const button = e.target.closest("button");
+        if (!button) return;
+        const listItem = button.closest(".credential-item");
+        if (!listItem) return;
+        const id = listItem.getAttribute("data-id");
+        const action = button.getAttribute("data-action");
+
+        if (action === "delete") {
+          if (confirm("Are you sure you want to delete this credential?")) {
+            try {
+              await deleteDoc(doc(db, "logins", id));
+              listItem.remove();
+            } catch (error) {
+              console.error("Error deleting document: ", error);
+              alert("Failed to delete credential. Please try again.");
+            }
+          }
+        } else if (action === "toggle-username-item") {
+          const usernameSpan = listItem.querySelector(".item-username-value");
+          if (usernameSpan) {
+            usernameSpan.classList.toggle("hidden");
+            button.textContent = usernameSpan.classList.contains("hidden")
+              ? "Show User"
+              : "Hide User";
+          }
+        } else if (action === "toggle-password-item") {
+          const passwordSpan = listItem.querySelector(".item-password-value");
+          if (passwordSpan) {
+            passwordSpan.classList.toggle("hidden");
+            button.textContent = passwordSpan.classList.contains("hidden")
+              ? "Show Pass"
+              : "Hide Pass";
+          }
+        } else if (action === "edit") {
+          const platform = listItem.querySelector(".item-platform").textContent;
+
+          const username = listItem.querySelector(
+            ".item-username-value"
+          ).textContent;
+          const password = listItem.querySelector(
+            ".item-password-value"
+          ).textContent;
+
+          form.platform.value = platform;
+          form.username.value = username;
+          form.password.value = password;
+          editingDocId = id;
+          formTitle.textContent = "Edit Credential";
+          submitBtn.textContent = "Update Credential";
+          cancelEditBtn.classList.remove("hidden");
+          form.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      });
+
+      document.querySelectorAll(".password-toggle-btn").forEach((button) => {
+        button.addEventListener("click", () => {
+          const targetId = button.getAttribute("data-target");
+          const targetInput = document.getElementById(targetId);
+          if (targetInput) {
+            const type =
+              targetInput.getAttribute("type") === "password"
+                ? "text"
+                : "password";
+            targetInput.setAttribute("type", type);
+            button.textContent = type === "password" ? "👁️" : "🙈";
+          }
+        });
+      });
+
+      signoutBtn.addEventListener("click", async () => {
+        try {
+          await signOut(auth);
+        } catch (error) {
+          console.error("Error signing out: ", error);
+          alert("Failed to sign out. Please try again.");
+        }
+      });
+    </script>
   </body>
-</html></div></svg>
+</html>

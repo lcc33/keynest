@@ -4,8 +4,61 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Keynest - Secure Your Logins</title>
-    <link rel="stylesheet" href="style.css">
-     <script type="module" src="app.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        height: 100vh;
+        background: #0f0c29; /* violet/dark gradient look */
+        background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+      }
+
+      .container {
+        text-align: center;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 3rem 2rem;
+        border-radius: 20px;
+        box-shadow: 0 0 20px rgba(0, 255, 200, 0.3);
+        backdrop-filter: blur(10px);
+      }
+
+      .logo {
+        font-size: 3rem;
+        color: #00ffc3;
+        margin-bottom: 1rem;
+        text-shadow: 0 0 10px #00ffc3;
+      }
+
+      .tagline {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+      }
+
+      #google-signin {
+        padding: 0.8rem 1.5rem;
+        background-color: #00ffc3;
+        color: #222;
+        font-weight: bold;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.5s ease;
+      }
+
+      #google-signin:hover {
+        background-color: #ffffff;
+        color: #000;
+      }
+    </style>
   </head>
 
   <body>
@@ -14,6 +67,51 @@
       <p class="tagline">Your digital keychain. Secure. Anywhere.</p>
       <button id="google-signin">Sign in with Google</button>
     </div>
-   
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
+      import {
+        getAuth,
+        GoogleAuthProvider,
+        signInWithPopup,
+      } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyDQ2IyIArTli1JnjBy6DZAUPUp9mK3JTEM",
+        authDomain: "keynest-70052.firebaseapp.com",
+        projectId: "keynest-70052",
+        storageBucket: "keynest-70052.firebasestorage.app",
+        messagingSenderId: "506594151806",
+        appId: "1:506594151806:web:6582f0b9d584ce614fb72f",
+        measurementId: "G-X0G324PVHR",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      auth.languageCode = `it`;
+      const provider = new GoogleAuthProvider();
+
+      // Google Sign-in Logic
+      const googleLogin = document.getElementById("google-signin");
+      googleLogin.addEventListener("click", () => {
+        signInWithPopup(auth, provider)
+          .then((result) => {
+            const credential = GoogleAuthProvider.credentialFromResult(result);
+            const user = result.user;
+            console.log(user);
+            window.location.href = `public/keynest.html`;
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.error(
+              "omo Sign-in failed:",
+              JSON.stringify(error, null, 2)
+            );
+
+            console.log(error);
+          });
+      });
+    </script>
   </body>
 </html>
